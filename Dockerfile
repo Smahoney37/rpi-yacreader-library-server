@@ -31,7 +31,8 @@ RUN apt-get update && \
       p7zip-full \
       git \
       sqlite3 \
-      build-essential
+      build-essential \
+      zlib1g-dev
 
 RUN git clone -b master --single-branch https://github.com/YACReader/yacreader.git . && \
 git checkout $TAG
