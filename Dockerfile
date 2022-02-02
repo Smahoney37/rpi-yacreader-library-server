@@ -1,12 +1,8 @@
 FROM debian:buster
-
 LABEL maintainer="dreibona"
-
 WORKDIR /src/git
-
 ENV APPNAME="YACReaderLibraryServer" 
-ENV TAG="9.8.2"
-
+ARG YACR_VERSION="9.8.2"
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
       dumb-init \
@@ -32,29 +28,20 @@ RUN apt-get update && \
       git \
       sqlite3 \
       build-essential \
-      zlib1g-dev
-
-RUN git clone -b master --single-branch https://github.com/YACReader/yacreader.git . && \
-git checkout $TAG
-
-RUN cd /src/git/YACReaderLibraryServer && \
-qmake "CONFIG+=server_standalone" YACReaderLibraryServer.pro && \
-make -j4 && \
-make install
-
-RUN cd / && \
-apt-get clean && \
-apt-get purge -y git build-essential && \
-apt-get -y autoremove && \
-rm -rf /src && \
-rm -rf /var/cache/apt
-
+      zlib1g-dev && \
+    git clone -b master --single-branch https://github.com/YACReader/yacreader.git . && \
+    git checkout $YACR_VERSION && \
+    cd /src/git/YACReaderLibraryServer && \
+    qmake "CONFIG+=server_standalone" YACReaderLibraryServer.pro && \
+    make -j4 && \
+    make install && \
+    cd / && \
+    apt-get clean && \
+    apt-get purge -y git build-essential qt5-qmake && \
+    apt-get -y autoremove && \
+    rm -rf /src /var/cache/apt
 ADD YACReaderLibrary.ini /root/.local/share/YACReader/YACReaderLibrary/
-
 VOLUME /comics
-
 EXPOSE 8000
-
 ENV LC_ALL=C.UTF8
-
 ENTRYPOINT ["YACReaderLibraryServer","start"]
