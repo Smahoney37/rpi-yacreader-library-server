@@ -29,7 +29,7 @@ RUN apt-get update && \
       sqlite3 \
       build-essential \
       zlib1g-dev && \
-    git clone http.sslVerify=false -b master --single-branch https://github.com/YACReader/yacreader.git . && \
+    git -c http.sslVerify=false clone -b master --single-branch https://github.com/YACReader/yacreader.git . && \
     git checkout $YACR_VERSION && \
     cd /src/git/YACReaderLibraryServer && \
     qmake "CONFIG+=server_standalone" YACReaderLibraryServer.pro && \
